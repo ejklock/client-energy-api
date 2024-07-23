@@ -1,0 +1,35 @@
+{
+  "name": "client-energy-elegility-check-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node ./dist/server.js",
+    "build": "rm -rf dist && tsc --sourceMap -p ./",
+    "dev": "tsx watch src/server.ts",
+    "lint": "eslint src --ext .ts --fix",
+    "test": "vitest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "fastify": "^4.28.1",
+    "@fastify/cors": "^9.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@rocketseat/eslint-config": "^2.2.2",
+    "@types/knex": "^0.16.1",
+    "@types/node": "^20.14.10",
+    "@types/yargs": "^17.0.32",
+    "@vitest/coverage-v8": "^2.0.1",
+    "eslint": "^8.57.0",
+    "form-data": "^4.0.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.1"
+  }
+}
