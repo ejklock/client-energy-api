@@ -26,3 +26,17 @@ export type ClientEligibilityData = {
   consumeClass: ConsumeClassesEnum
   consumptionMonthHistory: number[]
 }
+
+export type IneligibleResponse = {
+  reasonsOfIneligibility: string[]
+}
+
+export type EligibleResponse = {
+  co2AnnualEconomy: number
+}
+
+export type EligibilityResponse = {
+  eligible: boolean
+  reasonsOfIneligibility?: string[]
+  co2AnnualEconomy?: number
+}
