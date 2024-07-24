@@ -1,7 +1,10 @@
-import { ConsumeClassesEnum, TaxModalityEnum } from './eligibility.types'
+import { BaseEntity } from '../common/base.entity'
+import {
+  ConsumeClassesEnum,
+  TaxModalityEnum,
+} from '../eligibility/eligibility.types'
 
-export class EligibilityConfigEntity {
-  id: number
+export class EligibilityConfigEntity extends BaseEntity<EligibilityConfigEntity> {
   eligibleConsumptionClasses: ConsumeClassesEnum[]
   eligibleTaxModality: TaxModalityEnum[]
 
@@ -9,6 +12,7 @@ export class EligibilityConfigEntity {
     eligibleConsumptionClasses: ConsumeClassesEnum[],
     eligibleTaxModality: TaxModalityEnum[],
   ) {
+    super()
     this.eligibleConsumptionClasses = eligibleConsumptionClasses
     this.eligibleTaxModality = eligibleTaxModality
   }

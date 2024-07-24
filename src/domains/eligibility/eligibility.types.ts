@@ -1,26 +1,30 @@
 export enum ConnectionTypesEnum {
-  SINGLE_PHASE,
-  BI_PHASE,
-  THREE_PHASE,
+  SINGLE_PHASE = 'SINGLE_PHASE',
+  BI_PHASE = 'BI_PHASE',
+  THREE_PHASE = 'THREE_PHASE',
 }
 
 export enum ConsumeClassesEnum {
-  RESIDENTIAL,
-  INDUSTRY,
-  COMERCIAL,
-  RURAL,
-  GOVERNMENT,
+  RESIDENTIAL = 'RESIDENTIAL',
+  INDUSTRY = 'INDUSTRY',
+  COMERCIAL = 'COMERCIAL',
+  RURAL = 'RURAL',
+  GOVERNMENT = 'GOVERNMENT',
 }
 
 export enum TaxModalityEnum {
-  BLUE,
-  WHITE,
-  GREEN,
-  CONVENTIONAL,
+  BLUE = 'BLUE',
+  WHITE = 'WHITE',
+  GREEN = 'GREEN',
+  CONVENTIONAL = 'CONVENTIONAL',
+}
+
+export type ValidationErrors = {
+  [key: string]: string
 }
 
 export type ClientEligibilityData = {
-  documentNumber: number
+  documentNumber: string
   connectionType: ConnectionTypesEnum
   taxModality: TaxModalityEnum
   consumeClass: ConsumeClassesEnum

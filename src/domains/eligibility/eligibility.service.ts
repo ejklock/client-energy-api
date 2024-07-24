@@ -1,91 +1,86 @@
-import { EligibilityMinimalConsumptionRepository } from '../eligibility-minimal-consumption/eligibility-minimal-consumption.repository'
-import { EligibilityConfigEntity } from './eligibility-config.entity'
-import { EligibilityConfigRepository } from './eligibility-config.repository'
+import { EligibilityConfigEntity } from '../eligibility-config/eligibility-config.entity'
+
 import {
   ClientEligibilityData,
   ConnectionTypesEnum,
   EligibilityResponse,
 } from './eligibility.types'
-
-const CO2_EMISSION_PER_1000_KWH = 84
+import {
+  calculateAverageConsumption,
+  calculateCo2YearSaving,
+  isValidDocumentCpfCnpj,
+} from '../../utils/common'
+import { EligibilityConfigService } from '../eligibility-config/eligibility-config.service'
+import { EligibilityMinimalConsumptionService } from '../eligibility-minimal-consumption/eligibility-minimal-consumption.service'
 
 export class EligibilityService {
-  private readonly eligibilityConfigRepository: EligibilityConfigRepository
-  private readonly eligibilityMinimalConsumptionRepository: EligibilityMinimalConsumptionRepository
+  private readonly eligibilityConfigService: EligibilityConfigService
+  private readonly eligibilityMinimalConsumptionService: EligibilityMinimalConsumptionService
 
   constructor() {
-    this.eligibilityConfigRepository =
-      new EligibilityConfigRepository().buildEligibilityConfig()
-    this.eligibilityMinimalConsumptionRepository =
-      new EligibilityMinimalConsumptionRepository().buildEligibilityMinimalConsumption()
-  }
-
-  private calculateAverageConsumption(monthsConsumption: number[]): number {
-    if (monthsConsumption.length === 0) return 0
-    const total = monthsConsumption.reduce((prev, curr) => prev + curr, 0)
-    return total / monthsConsumption.length
+    this.eligibilityConfigService =
+      new EligibilityConfigService().mockEligibilityConfig()
+    this.eligibilityMinimalConsumptionService =
+      new EligibilityMinimalConsumptionService().mockEligibilityMinimalConsumption()
   }
 
   private getClientMinimalConsumption(
     connectionType: ConnectionTypesEnum,
   ): number | undefined {
-    return this.eligibilityMinimalConsumptionRepository.getByConnectionType(
+    return this.eligibilityMinimalConsumptionService.getByConnectionType(
       connectionType,
     )?.minimalConsumption
   }
 
-  private calculateCo2YearSaving(averageConsumption: number): number {
-    const annualConsumption = averageConsumption * 12
-    return (annualConsumption / 1000) * CO2_EMISSION_PER_1000_KWH
-  }
-
   private validateConsumptionHistory(
     consumptionMonthHistory: number[],
-    eligibilityResponse: EligibilityResponse,
+    validationErrors: string[],
   ): void {
     if (
       consumptionMonthHistory.length < 3 ||
       consumptionMonthHistory.length > 12
     ) {
-      eligibilityResponse.eligible = false
-      eligibilityResponse.reasonsOfIneligibility.push(
-        'Client has not valid month consumption history',
-      )
+      validationErrors.push('Client has not valid month consumption history')
     }
   }
 
   private validateTaxModality(
     eligibilityConfig: EligibilityConfigEntity,
     taxModality: number,
-    eligibilityResponse: EligibilityResponse,
+    validationErrors: string[],
   ): void {
     if (!eligibilityConfig.eligibleTaxModality.includes(taxModality)) {
-      eligibilityResponse.eligible = false
-      eligibilityResponse.reasonsOfIneligibility.push(
-        'Client has not valid tax modality',
-      )
+      validationErrors.push('Client has not valid tax modality')
     }
   }
 
   private validateConsumptionClass(
     eligibilityConfig: EligibilityConfigEntity,
     consumptionClass: number,
-    eligibilityResponse: EligibilityResponse,
+    validationErrors: string[],
   ): void {
     if (
       !eligibilityConfig.eligibleConsumptionClasses.includes(consumptionClass)
     ) {
-      eligibilityResponse.eligible = false
-      eligibilityResponse.reasonsOfIneligibility.push(
-        'Client has not valid consumption class',
-      )
+      validationErrors.push('Client has not valid consumption class')
+    }
+  }
+
+  private validateClientDocumentNumber(
+    documentNumber: string,
+    validationErrors: string[],
+  ): void {
+    const isValid = isValidDocumentCpfCnpj(documentNumber)
+
+    if (!isValid) {
+      validationErrors.push('Invalid cpf or cnpj')
     }
   }
 
   private validateMinimalConsumption(
     averageConsumption: number,
     connectionType: ConnectionTypesEnum,
-    eligibilityResponse: EligibilityResponse,
+    validationErrors: string[],
   ): void {
     const clientMinimalConsumption =
       this.getClientMinimalConsumption(connectionType)
@@ -94,55 +89,51 @@ export class EligibilityService {
       averageConsumption <= 0 ||
       averageConsumption < clientMinimalConsumption
     ) {
-      eligibilityResponse.eligible = false
-      eligibilityResponse.reasonsOfIneligibility.push(
-        'Client has not valid minimal consumption',
-      )
+      validationErrors.push('Client has not valid minimal consumption')
     }
   }
 
-  public async checkClientEligibility({
+  public checkClientEligibility({
     documentNumber,
     connectionType,
     taxModality,
     consumeClass,
     consumptionMonthHistory,
-  }: ClientEligibilityData): Promise<EligibilityResponse> {
+  }: ClientEligibilityData): EligibilityResponse {
+    const validationErrors: string[] = []
+
     const eligibilityResponse: EligibilityResponse = {
-      eligible: true,
-      reasonsOfIneligibility: [],
+      eligible: false,
     }
 
-    const averageConsumption = this.calculateAverageConsumption(
+    const averageConsumption = calculateAverageConsumption(
       consumptionMonthHistory,
     )
-    const eligibilityConfig = this.eligibilityConfigRepository.firstOrFail()
+    const eligibilityConfig =
+      this.eligibilityConfigService.findEligibilityConfigOrFail()
+
+    this.validateClientDocumentNumber(documentNumber, validationErrors)
 
     this.validateMinimalConsumption(
       averageConsumption,
       connectionType,
-      eligibilityResponse,
+      validationErrors,
     )
-    this.validateConsumptionHistory(
-      consumptionMonthHistory,
-      eligibilityResponse,
-    )
+    this.validateConsumptionHistory(consumptionMonthHistory, validationErrors)
     this.validateConsumptionClass(
       eligibilityConfig,
       consumeClass,
-      eligibilityResponse,
+      validationErrors,
     )
-    this.validateTaxModality(
-      eligibilityConfig,
-      taxModality,
-      eligibilityResponse,
-    )
+    this.validateTaxModality(eligibilityConfig, taxModality, validationErrors)
 
-    if (eligibilityResponse.reasonsOfIneligibility.length > 0) {
+    if (validationErrors.length > 0) {
+      eligibilityResponse.eligible = false
+      eligibilityResponse.reasonsOfIneligibility = validationErrors
       return eligibilityResponse
     }
 
-    const co2AnnualEconomy = this.calculateCo2YearSaving(averageConsumption)
+    const co2AnnualEconomy = calculateCo2YearSaving(averageConsumption)
     return {
       eligible: true,
       co2AnnualEconomy,
