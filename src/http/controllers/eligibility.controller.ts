@@ -1,10 +1,21 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { Controller, GET, POST } from 'fastify-decorators'
+import { EligibilityService } from '../../domains/eligibility/eligibility.service'
+import { schema } from './schemas'
 
-export async function checkClientEligibility(
-  req: FastifyRequest,
-  res: FastifyReply,
-) {
-  const { documentNumber, connectionType, taxModality, consumeClass } = req.body
-  console.log(documentNumber, connectionType, taxModality, consumeClass)
-  return 'Hello from eligibility'
+@Controller({
+  route: '/eligibility',
+  tags: [{ name: 'Eligibility' }],
+})
+export default class EligibilityController {
+  private readonly eligibilityService: EligibilityService
+  constructor() {
+    this.eligibilityService = new EligibilityService()
+  }
+
+  @POST('/check', { schema })
+  async checkClientEligibility(req: FastifyRequest, res: FastifyReply) {
+    console.log(req.body)
+    return 'Hello from eligibility'
+  }
 }

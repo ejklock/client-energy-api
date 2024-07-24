@@ -3,8 +3,8 @@ import cors from '@fastify/cors'
 import fastify from 'fastify'
 
 import { fastifySwagger } from '@fastify/swagger'
-import { registerRoutesPlugin } from './plugins/register-routes.plugin'
 import { swaggerUiPlugin } from './plugins/swagger-ui.plugin'
+import { bootstrap } from 'fastify-decorators'
 
 const port = Number(process.env.PORT) || 3000
 const host = process.env.HOST || 'localhost'
@@ -27,20 +27,12 @@ export function getServer() {
       },
       servers: [{ url: 'http://localhost:3000' }],
     },
-    // swagger: {
-    //   schemes: ['http'],
-    //   consumes: ['application/json'],
-    //   produces: ['application/json'],
-    //   tags: [{ name: 'eligibility', description: 'Client Eligibility API' }],
-    //   info: {
-    //     title: 'Client Energy Eligibility Check API',
-    //     version: '0.1.0',
-    //   },
-    // },
   })
-
+  app.register(bootstrap, {
+    directory: new URL(`http/controllers`, import.meta.url),
+    mask: /\.controller\./,
+  })
   app.register(swaggerUiPlugin)
-  app.register(registerRoutesPlugin)
 
   return app
 }

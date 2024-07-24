@@ -1,21 +1,19 @@
 {
   "compilerOptions": {
-    "lib": [
-      "ES2020"
-    ],
+    "lib": ["ES2022"],
+    "composite": true,
+    "strict": true,
     "allowJs": true,
-    "target": "ES2020",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "ESNext",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "./dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "./src/**/__tests__/*.ts"
-  ]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "./src/**/__tests__/*.ts"]
 }

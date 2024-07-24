@@ -3,7 +3,9 @@ import { EligibilityConfigEntity } from '../eligibility-config/eligibility-confi
 import {
   ClientEligibilityData,
   ConnectionTypesEnum,
+  ConsumeClassesEnum,
   EligibilityResponse,
+  TaxModalityEnum,
 } from './eligibility.types'
 import {
   calculateAverageConsumption,
@@ -46,7 +48,7 @@ export class EligibilityService {
 
   private validateTaxModality(
     eligibilityConfig: EligibilityConfigEntity,
-    taxModality: number,
+    taxModality: TaxModalityEnum,
     validationErrors: string[],
   ): void {
     if (!eligibilityConfig.eligibleTaxModality.includes(taxModality)) {
@@ -56,7 +58,7 @@ export class EligibilityService {
 
   private validateConsumptionClass(
     eligibilityConfig: EligibilityConfigEntity,
-    consumptionClass: number,
+    consumptionClass: ConsumeClassesEnum,
     validationErrors: string[],
   ): void {
     if (
