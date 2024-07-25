@@ -1,3 +1,12 @@
+import { IRepository } from './commom.interfaces'
+
 export abstract class BaseService<T> {
-  constructor(protected readonly repository: IRepository<T>) {}
+  protected repository: IRepository<T>
+  constructor(repository: IRepository<T>) {
+    this.repository = repository
+  }
+
+  getRepository(): IRepository<T> {
+    return this.repository
+  }
 }

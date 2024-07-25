@@ -1,4 +1,4 @@
-interface IRepository<T> {
+export interface IRepository<T> {
   firstOrFail(): T
   findAll(): T[]
   findById(id: number): T | undefined

@@ -4,7 +4,7 @@ import {
   TaxModalityEnum,
 } from '../eligibility/eligibility.types'
 
-export class EligibilityConfigEntity extends BaseEntity<EligibilityConfigEntity> {
+export class EligibilityConfigEntity extends BaseEntity {
   eligibleConsumptionClasses: ConsumeClassesEnum[]
   eligibleTaxModality: TaxModalityEnum[]
 

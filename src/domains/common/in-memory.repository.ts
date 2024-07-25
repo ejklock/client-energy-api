@@ -1,6 +1,7 @@
 import { BaseEntity } from './base.entity'
+import { IRepository } from './commom.interfaces'
 
-export abstract class InMemoryRepository<T extends BaseEntity<T>>
+export abstract class InMemoryRepository<T extends BaseEntity>
   implements IRepository<T>
 {
   protected idAutoIncrement = 1
@@ -12,9 +13,11 @@ export abstract class InMemoryRepository<T extends BaseEntity<T>>
     }
     return this.items[0]
   }
+
   findAll(): T[] {
     return this.items
   }
+
   findById(id: number): T | undefined {
     return this.items.find((item) => item.id === id)
   }

@@ -5,10 +5,10 @@ const CO2_EMISSION_PER_1000_KWH = 84
 export function successResponse<T>({
   message = 'Success',
   data,
-}: { message?: string; data?: T } = {}): {
+}: { message?: string; data?: T | undefined } = {}): {
   success: boolean
   message: string
-  data: T
+  data?: T
 } {
   return {
     success: true,

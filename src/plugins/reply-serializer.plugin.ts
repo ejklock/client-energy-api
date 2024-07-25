@@ -1,15 +1,9 @@
-import { FastifyInstance } from 'fastify'
+export const replySerializerPlugin = (payload: unknown, statusCode: number) => {
+  const { errors = null } = payload as Record<string, unknown>
 
-export async function replySerializerPlugin(app: FastifyInstance) {
-  return app.setReplySerializer((payload: Record<string, unknown>) => {
-    const {
-      success = true,
-      message = 'OK',
-      data = null,
-      links = null,
-      meta = null,
-    } = payload
-
-    return JSON.stringify({ success, message, data, links, meta })
+  return JSON.stringify({
+    success: statusCode < 400,
+    message: statusCode < 400 ? 'Ok' : 'Error',
+    ...(statusCode < 400 ? { payload } : { errors }),
   })
 }

@@ -8,7 +8,7 @@ import {
 } from './common'
 import { BaseEntity } from '../domains/common/base.entity'
 
-class TestEntity extends BaseEntity<TestEntity> {
+class TestEntity extends BaseEntity {
   name: string
 
   constructor(name: string) {

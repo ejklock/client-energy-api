@@ -86,6 +86,7 @@ export class EligibilityService {
   ): void {
     const clientMinimalConsumption =
       this.getClientMinimalConsumption(connectionType)
+    console.log(clientMinimalConsumption)
     if (
       clientMinimalConsumption === undefined ||
       averageConsumption <= 0 ||

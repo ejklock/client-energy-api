@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { BaseEntity } from './base.entity'
 import { InMemoryRepository } from './in-memory.repository'
 
-class TestEntity extends BaseEntity<TestEntity> {
+class TestEntity extends BaseEntity {
   name: string
   constructor(name: string) {
     super()

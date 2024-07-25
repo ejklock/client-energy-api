@@ -1,7 +1,7 @@
 import { BaseEntity } from '../common/base.entity'
 import { ConnectionTypesEnum } from '../eligibility/eligibility.types'
 
-export class EligibilityMinimalConsumptionEntity extends BaseEntity<EligibilityMinimalConsumptionEntity> {
+export class EligibilityMinimalConsumptionEntity extends BaseEntity {
   minimalConsumption: number
   connectionType: ConnectionTypesEnum
 
@@ -11,7 +11,10 @@ export class EligibilityMinimalConsumptionEntity extends BaseEntity<EligibilityM
     id?: number,
   ) {
     super()
-    this.id = id
+    if (id) {
+      this.id = id
+    }
+
     this.minimalConsumption = minimalConsumption
     this.connectionType = connectionType
   }

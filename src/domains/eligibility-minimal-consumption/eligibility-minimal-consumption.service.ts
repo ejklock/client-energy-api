@@ -4,11 +4,11 @@ import { EligibilityMinimalConsumptionEntity } from './eligibility-minimal-consu
 import { EligibilityMinimalConsumptionRepository } from './eligibility-minimal-consumption.repository'
 
 export class EligibilityMinimalConsumptionService extends BaseService<EligibilityMinimalConsumptionEntity> {
-  protected readonly repository: EligibilityMinimalConsumptionRepository
+  private eligibilityMinimalConsumptionRepository: EligibilityMinimalConsumptionRepository
   constructor() {
     const repositoryInstance = new EligibilityMinimalConsumptionRepository()
     super(repositoryInstance)
-    this.repository = new EligibilityMinimalConsumptionRepository()
+    this.eligibilityMinimalConsumptionRepository = repositoryInstance
   }
 
   public mockEligibilityMinimalConsumption() {
@@ -35,6 +35,8 @@ export class EligibilityMinimalConsumptionService extends BaseService<Eligibilit
   public getByConnectionType(
     connectionType: ConnectionTypesEnum,
   ): EligibilityMinimalConsumptionEntity | undefined {
-    return this.repository.findByConnectionType(connectionType)
+    return this.eligibilityMinimalConsumptionRepository.findByConnectionType(
+      connectionType,
+    )
   }
 }

@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3333:3333'
+    networks:
+      - energyManagerApiNetwork
+
+networks:
+  energyManagerApiNetwork:
+    driver: bridge

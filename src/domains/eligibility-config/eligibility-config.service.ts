@@ -7,12 +7,11 @@ import { EligibilityConfigEntity } from './eligibility-config.entity'
 import { EligibilityConfigRepository } from './eligibility-config.repository'
 
 export class EligibilityConfigService extends BaseService<EligibilityConfigEntity> {
-  protected readonly repository: EligibilityConfigRepository
-
+  protected eligibilityConfigRepository: EligibilityConfigRepository
   constructor() {
     const repositoryInstance = new EligibilityConfigRepository()
     super(repositoryInstance)
-    this.repository = new EligibilityConfigRepository()
+    this.eligibilityConfigRepository = repositoryInstance
   }
 
   public mockEligibilityConfig() {
@@ -25,13 +24,13 @@ export class EligibilityConfigService extends BaseService<EligibilityConfigEntit
       [TaxModalityEnum.WHITE, TaxModalityEnum.CONVENTIONAL],
     )
 
-    this.repository.saveMany([eligibilityConfig])
+    this.eligibilityConfigRepository.saveMany([eligibilityConfig])
 
     return this
   }
 
   public findEligibilityConfigOrFail(): EligibilityConfigEntity {
-    const eligibilityConfig = this.repository.firstOrFail()
+    const eligibilityConfig = this.eligibilityConfigRepository.firstOrFail()
     return eligibilityConfig
   }
 }

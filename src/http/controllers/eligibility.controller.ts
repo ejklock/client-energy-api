@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { Controller, GET, POST } from 'fastify-decorators'
+import { Controller, POST } from 'fastify-decorators'
 import { EligibilityService } from '../../domains/eligibility/eligibility.service'
-import { schema } from './schemas'
+import { checkEligibilitySchema } from './schemas'
+import { ClientEligibilityData } from '../../domains/eligibility/eligibility.types'
 
 @Controller({
   route: '/eligibility',
@@ -13,9 +14,24 @@ export default class EligibilityController {
     this.eligibilityService = new EligibilityService()
   }
 
-  @POST('/check', { schema })
+  @POST('/check', { schema: checkEligibilitySchema })
   async checkClientEligibility(req: FastifyRequest, res: FastifyReply) {
-    console.log(req.body)
-    return 'Hello from eligibility'
+    const {
+      documentNumber,
+      connectionType,
+      consumeClass,
+      taxModality,
+      consumptionMonthHistory,
+    } = req.body as ClientEligibilityData
+
+    res.send(
+      this.eligibilityService.checkClientEligibility({
+        documentNumber,
+        connectionType,
+        consumeClass,
+        taxModality,
+        consumptionMonthHistory,
+      }),
+    )
   }
 }

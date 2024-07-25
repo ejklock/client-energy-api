@@ -18,6 +18,8 @@ describe('EligibilityService', () => {
         3878, 9760, 5976, 2797, 2481, 5731, 7538, 4392, 7859, 4160, 6941, 4597,
       ],
     })
+
+    console.log(response)
     expect(response).toEqual({
       eligible: true,
       co2AnnualEconomy: 5553.24,

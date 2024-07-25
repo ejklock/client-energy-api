@@ -3,7 +3,7 @@ import { FastifyInstance } from 'fastify'
 
 export async function swaggerUiPlugin(app: FastifyInstance) {
   return await app.register(fastifyApiReference, {
-    routePrefix: '/docs',
+    routePrefix: '/',
     configuration: {
       metaData: {
         title: 'Client Energy API',
